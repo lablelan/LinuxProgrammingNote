@@ -1,0 +1,16 @@
+site_name: 学习笔记
+pages:
+  - 主页: index.md
+  - 第一章 入门:
+     - 入门: LinuxProgramming/Chapter01/ch01_01.md
+  - 第二章 Shell程序设计: 
+     - Shell程序设计: LinuxProgramming/Chapter02/ch02_01.md
+  - 第三章 文件操作: 
+     - 系统调用-库函数: LinuxProgramming/Chapter03/ch03_01.md
+     - 系统调用-复制文件例子: LinuxProgramming/Chapter03/ch03_02.md
+     - C标准库-I/O函数: LinuxProgramming/Chapter03/ch03_03.md
+
+theme: readthedocs
+
+repo_url: https://lablelan.github.io/LinuxProgrammingNote
+edit_uri: ""
