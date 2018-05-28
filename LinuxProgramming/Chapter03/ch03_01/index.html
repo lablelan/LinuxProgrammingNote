@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>系统调用-库函数 - 学习笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7cfb\u7edf\u8c03\u7528-\u5e93\u51fd\u6570";
+    var mkdocs_page_input_path = "LinuxProgramming\\Chapter03\\ch03_01.md";
+    var mkdocs_page_url = "/LinuxProgramming/Chapter03/ch03_01/";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> 学习笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../..">主页</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第一章 入门</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../Chapter01/ch01_01/">入门</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第二章 Shell程序设计</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../Chapter02/ch02_01/">Shell程序设计</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第三章 文件操作</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">系统调用-库函数</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#-">系统调用-库函数</a></li>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ch03_02/">系统调用-复制文件例子</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ch03_03/">C标准库-I/O函数</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">学习笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>第三章 文件操作 &raquo;</li>
+        
+      
+    
+    <li>系统调用-库函数</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="-">系统调用-库函数</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Descriptions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>open</td>
+<td align="right">打开文件或设备</td>
+</tr>
+<tr>
+<td>read</td>
+<td align="right">从打开的文件或设备里读数据</td>
+</tr>
+<tr>
+<td>write</td>
+<td align="right">向文件或设备写数据</td>
+</tr>
+<tr>
+<td>close</td>
+<td align="right">关闭文件或设备</td>
+</tr>
+<tr>
+<td>ioctl</td>
+<td align="right">把控制信息传递给设备驱动程序</td>
+</tr>
+</tbody>
+</table>
+<p>1.write系统调用</p>
+<pre><code class="c++">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+/* size_t write(int fildes, const void *buf, size_t nbytes);
+* @fildes 文件描述符
+* @buf    写入的buf
+* @nbytes 写入字节数
+* @return 实际写入字节数，失败返回-1
+*/
+
+int main()
+{
+    if ((write(1, &quot;Here is some data\n&quot;, 18)) != 18)
+    {
+        write(2, &quot;A write error has occurred on file descriptor 1\n&quot;, 46);
+    }
+
+    exit(0);
+}
+</code></pre>
+
+<p>2.read系统调用</p>
+<pre><code class="c++">#include&lt;unistd.h&gt;
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+
+/*
+* size_t read(int fildes, void *buf, size_t nbytes);
+* @fildes 文件描述符
+* @buf 读取缓冲buf
+* @nbytes 从文件读取的字节数
+* @return 返回实际读取的字节数，失败返回-1
+*/
+
+int main(int argc, char *argv[])
+{
+    char buffer[128];
+    int nread;
+
+    nread = read(0, buffer, 128);
+    if (nread == -1)
+    {
+        write(2, &quot;A read error has occurred\n&quot;, 26);
+    }
+
+    if ((write(1, buffer, nread)) != nread)
+    {
+        write(2, &quot;A write error has occurred\n&quot;, 27);
+    }
+
+    printf(&quot;argc:%d, argv[0]:%s, argv[1]:%s&quot;, argc, argv[0], argv[1]);
+
+    exit(0);
+}
+</code></pre>
+
+<p>3.open系统调用</p>
+<pre><code class="c++">#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+
+#include&lt;fcntl.h&gt;
+#include&lt;sys/types.h&gt;
+#include&lt;sys/stat.h&gt;
+
+/*
+* int open(const char *path, int oflags);
+* @path 文件路径
+* @oflags 指定打开文件采用的行为(只读/只写/读写)|(末尾追加/丢弃已有内容)
+* @return 返回一个新的文件描述符,返回-1设置全局变量errno来指明失败原因
+*
+* int open(const char *path, int oflags, mode_t mode);
+* @path 文件路径
+* @oflags 指定打开文件采用的行为(只读/只写/读写)|(末尾追加/对齐已有内容/按参数mode访问模式创建文件/阻&gt;止同时创建同一个文件)
+* @mode 当oflags带有O_CREAT创建标志时，指定创建文件的权限及所属（与umask有关）
+* @return 返回一个新的文件描述符，返回-1设置全局变量errno来指明失败原因
+*/
+
+int main()
+{
+    int err = open(&quot;myfile&quot;, O_CREAT|O_EXCL, S_IRUSR|S_IXOTH);
+
+    printf(&quot;%d&quot;, err);
+
+    exit(0);
+}
+</code></pre>
+
+<p>4.close系统调用</p>
+<pre><code class="c++">#include &lt;fcntl.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/stat.h&gt;
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+#include &lt;unistd.h&gt;
+
+/*
+* int close(int fildes);
+* @fildes 文件描述符
+* @return 释放文件描述符成返回0，否则返回-1
+*/
+
+int main()
+{
+   int fd = open(&quot;myfile&quot;, O_RDONLY);
+
+   printf(&quot;fd:%d\n&quot;, fd);
+
+   int close_err = close(fd);
+   printf(&quot;close_err:%d\n&quot;, close_err);
+
+   exit(0);
+}
+</code></pre>
+
+<p>5.ioctl系统调用</p>
+<pre><code class="c++">#include &lt;stdio.h&gt;
+
+#include &lt;unistd.h&gt;
+
+/*
+* int ioctl(int fildes, int cmd, ...);
+* @fildes 文件描述符
+* @cmd 文件描述符引用对象执行的操作
+* @... 执行操作的不同的可选补充参数
+* @return 返回操作是否成功
+*/
+
+int main()
+{
+    // linux系统上将键盘的LED等打开
+    ioctl(tty_fd, KDSETLED, LED_NUM|LED_CAP|LED_SCR);
+
+    exit(0);
+}
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../ch03_02/" class="btn btn-neutral float-right" title="系统调用-复制文件例子">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../Chapter02/ch02_01/" class="btn btn-neutral" title="Shell程序设计"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../Chapter02/ch02_01/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../ch03_02/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/require.js"></script>
+      <script src="../../../search/search.js"></script>
+
+</body>
+</html>

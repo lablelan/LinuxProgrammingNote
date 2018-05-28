@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>C标准库-I/O函数 - 学习笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "C\u6807\u51c6\u5e93-I/O\u51fd\u6570";
+    var mkdocs_page_input_path = "LinuxProgramming\\Chapter03\\ch03_03.md";
+    var mkdocs_page_url = "/LinuxProgramming/Chapter03/ch03_03/";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> 学习笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../..">主页</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第一章 入门</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../Chapter01/ch01_01/">入门</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第二章 Shell程序设计</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../Chapter02/ch02_01/">Shell程序设计</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第三章 文件操作</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../ch03_01/">系统调用-库函数</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ch03_02/">系统调用-复制文件例子</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">C标准库-I/O函数</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#c-io">C标准库-I/O函数</a></li>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">学习笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>第三章 文件操作 &raquo;</li>
+        
+      
+    
+    <li>C标准库-I/O函数</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="c-io">C标准库-I/O函数</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Descriptions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fopen</td>
+<td align="right">类似底层的opne系统调用。有输入/输出缓冲。返回一个文件流。</td>
+</tr>
+<tr>
+<td>fclose</td>
+<td align="right">关闭指定的文件流stream，使所有尚未写出的数据都写出(close隐藏执行了一次flush操作)。</td>
+</tr>
+<tr>
+<td>fflush</td>
+<td align="right">把文件流里未写出的数据立即写出。</td>
+</tr>
+<tr>
+<td>fseek</td>
+<td align="right">与lseek对应。指定下一次读写操作的指定位置。</td>
+</tr>
+<tr>
+<td>fread</td>
+<td align="right">从一个指定文件流读取数据记录，并写到ptr指向的数据缓冲区。</td>
+</tr>
+<tr>
+<td>fgetc</td>
+<td align="right">从一个文件流里去除下一个字节并作为一个字符返回。当它达到文件尾或出现错误时，返回EOF。</td>
+</tr>
+<tr>
+<td>getc</td>
+<td align="right">与fgetc作用相同，它很可能被实现为一个fgetc的宏。</td>
+</tr>
+<tr>
+<td>getchar</td>
+<td align="right">相当于getc(stdin)，它从标准输入里读下一个字符。注意它把字符当做int而不是char，这样就运行文件尾(EOF)标志取值-1。</td>
+</tr>
+<tr>
+<td>fgets</td>
+<td align="right">将字符写到参数s指向的的字符串里，直到遇到 换行符/已经输出了指定长度n-1个字符/达到文件尾 时在结尾加上\0。</td>
+</tr>
+<tr>
+<td>gets</td>
+<td align="right">与fgets类似，不过它从标准输入读取数据并丢弃遇到的换行符\n。它在接收字符串的尾部加上一个null字节。注意：get对传输字符个数并没有限制，这意味着它可能会移除字节的传输缓冲区。</td>
+</tr>
+<tr>
+<td>fwrite</td>
+<td align="right">从一个指定文件流取出数据记录，并写到输出流中。</td>
+</tr>
+<tr>
+<td>fputc</td>
+<td align="right">把一个字符写到一个输出文件流中。</td>
+</tr>
+<tr>
+<td>putc</td>
+<td align="right">与fputs作用相同，它很可能被实现为一个fputc的宏。</td>
+</tr>
+<tr>
+<td>putchar</td>
+<td align="right">相当于putc(c, stdout)，它把单个字符写到标准输出。注意它把字符当做int而不是char，这样就运行文件尾(EOF)标志取值-1。</td>
+</tr>
+<tr>
+<td>fputs</td>
+<td align="right">将参数s字符串写入文件流stream中，写入n个字符。</td>
+</tr>
+<tr>
+<td>puts</td>
+<td align="right"></td>
+</tr>
+<tr>
+<td>printf</td>
+<td align="right">把自己的输出送到标准输出。</td>
+</tr>
+<tr>
+<td>fprintf</td>
+<td align="right">把自己的输出送到指定文件流</td>
+</tr>
+<tr>
+<td>sprintf</td>
+<td align="right">发自己的输出和一个结尾控制阀写到作为参数传递过来的字符串s里。这个s字符串必须足够容纳所有的输出数据。</td>
+</tr>
+</tbody>
+</table>
+<p>1.fopen、fclose</p>
+<pre><code class="c++">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+/*
+* FILE *fopen(const char *filename, const char *mode);
+* @filename 打开文件名
+* @mode 打开文件方式
+* @return 成功返回文件流，失败返回NULL
+*/
+
+/*
+* int fclose(FILE *stream);
+* @stream 指定文件流
+* @return 成功返回0，失败返回非0
+*/
+
+int main()
+{
+    FILE *in = NULL;
+
+    in = fopen(&quot;file.in&quot;, &quot;r&quot;);
+
+    if(in != NULL)
+    {
+        printf(&quot;in: %d\n&quot;, in);
+        int a = fgetc(in);
+        printf(&quot;%d\n&quot;, a);    
+    }
+    else
+    {
+        printf(&quot;fopen execuet error\n&quot;);
+    }
+
+    int close_ret = 0;
+    printf(&quot;in:%d\n&quot;, in);
+    close_ret = fclose(in);
+    printf(&quot;close_ret: %d\n&quot;, close_ret);
+
+    exit(0);
+}
+</code></pre>
+
+<p>2.fgetc、getc</p>
+<pre><code class="c++">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+/*
+* int fgetc(FILE *stream);
+* @stream 指定文件流
+* @return 成功返回读取的字符，失败返回-1
+*/
+
+/*
+* int getc(FILE *stream);
+* @stream 指定文件流
+* @return 成功返回读取的字符，失败返回-1
+*/
+
+int main()
+{
+    FILE *in = NULL;
+
+    in = fopen(&quot;file.in&quot;, &quot;r&quot;);
+
+    int c = fgetc(in);
+    printf(&quot;%c\n&quot;, c);
+    int b = getc(in);
+    printf(&quot;%c\n&quot;, b);
+
+    int ret = fclose(in);
+    printf(&quot;%d\n&quot;, ret);
+
+    return 0;
+}
+</code></pre>
+
+<p>3.fgets</p>
+<pre><code class="c++">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+/*
+* char *fgets(char *s, int n, FILE *stream);
+* @s 存放读取的字符串
+* @n 读取字符串的长度
+* @stream 指定文件流
+* @return 成功返回s的指针，失败返回NULL
+*/
+
+int main()
+{
+    FILE *in = NULL;
+
+    in = fopen(&quot;file.in&quot;, &quot;r&quot;);
+    char s[1024] = { 0 };
+    char *tmp = NULL;
+
+    tmp = fgets(s, 1023, in);
+
+    if(tmp != NULL)
+    {
+        printf(&quot;%s\n&quot;, s);
+        printf(&quot;%s\n&quot;, tmp);
+    }
+
+    int ret = fclose(in);
+    printf(&quot;close:%d\n&quot;, ret);
+
+    exit(0);
+}
+</code></pre>
+
+<p>4.fputc、putc</p>
+<pre><code class="c++">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+/*
+* int fputc(int c, FILE *stream);
+* @c 将要写入的字符
+* @stream 指定的文件流
+* @return 成功返回0，失败返回EOP
+*/
+
+/*
+* int putc(int c, FILE *stream);
+* @c 将要写入的字符
+* @stream 指定的文件流
+* @return 成功返回0，失败返回EOF
+*/
+
+int main()
+{
+    FILE *out = NULL;
+    out = fopen(&quot;file.out&quot;, &quot;w&quot;);
+
+    if (out != NULL)
+    {
+        int fp_ret = fputc(64, out);
+        printf(&quot;fp_ret: %d\n&quot;, fp_ret);
+        int p_ret = putc(65, out);
+        printf(&quot;p_ret: %d\n&quot;, p_ret);
+    }
+
+    int close_ret = fclose(out);
+    printf(&quot;close_ret:%d&quot;, close_ret);
+
+    exit(0);
+}
+</code></pre>
+
+<p>5.fflush</p>
+<pre><code class="c++">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+/*
+ * int fflush(FILE *stream);
+ * @stream 指定文件流
+ * @return 成功返回0，失败返回EOF
+ */
+
+int main()
+{
+    FILE *out = NULL;
+    out = fopen(&quot;file.out&quot;, &quot;w&quot;);
+
+    if (out != NULL)
+    {
+        fputc(67, out);
+        int ff_ret = fflush(out);
+        printf(&quot;ff_ret: %d\n&quot;, ff_ret);
+    }
+
+    while(1)
+    {
+        printf(&quot;cat the file.out\n&quot;);
+        sleep(1);
+    }
+
+    int close_ret = fclose(out);
+    printf(&quot;close_ret:%d&quot;, close_ret);
+
+    exit(0);
+}
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../ch03_02/" class="btn btn-neutral" title="系统调用-复制文件例子"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../ch03_02/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/require.js"></script>
+      <script src="../../../search/search.js"></script>
+
+</body>
+</html>
