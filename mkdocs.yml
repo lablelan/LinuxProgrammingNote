@@ -10,7 +10,22 @@ pages:
      - 系统调用-复制文件例子: LinuxProgramming/Chapter03/ch03_02.md
      - C标准库-I/O函数: LinuxProgramming/Chapter03/ch03_03.md
 
-theme: readthedocs
+theme:
+  name: 'material'
+  logo:
+    icon: 'school'
+  palette:
+    primary: 'blue grey'
+    accent: 'light blue'
+  font:
+    text: 'Open Sans'
+    code: 'Open Sans Mono'
+  language: 'zh'
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.mark
 
 repo_url: https://lablelan.github.io/LinuxProgrammingNote
 edit_uri: ""
